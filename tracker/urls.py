@@ -27,6 +27,4 @@ urlpatterns = [
     path('activity-analytics/', views.activity_analytics, name='activity_analytics'),
 
     path('create-admin/', views.create_admin, name='create_admin'),
-
-    path('create-admin/', views.create_admin)
 ]
