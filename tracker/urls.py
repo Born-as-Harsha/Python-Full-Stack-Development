@@ -25,4 +25,6 @@ urlpatterns = [
     path('chart-data/', views.chart_data_api, name='chart_data_api'),
 
     path('activity-analytics/', views.activity_analytics, name='activity_analytics'),
+
+    path('create-admin/', views.create_admin, name='create_admin'),
 ]
