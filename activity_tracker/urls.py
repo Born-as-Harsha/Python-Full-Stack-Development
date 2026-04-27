@@ -57,6 +57,10 @@ urlpatterns = [
 
     # 🔥 INCLUDE APP URLS (NO namespace)
     path('', include('tracker.urls')),   # ✅ correct
+
+    # activity_tracker/urls.py
+
+    path('reset-admin/', views.reset_admin),
 ]
 
 # MEDIA
