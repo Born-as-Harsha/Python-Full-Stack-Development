@@ -645,13 +645,13 @@ def activity_analytics(request):
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
-def create_admin(request):
-    if User.objects.filter(username='admin').exists():
-        return HttpResponse("Admin already exists")
-
-    User.objects.create_superuser(
-        username='admin',
-        password='admin123',
-        email='admin@gmail.com'
-    )
-    return HttpResponse("Admin created successfully")
+def reset_admin(request):
+    try:
+        user = User.objects.get(username='admin')
+        user.set_password('admin123')   # new password
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
+        return HttpResponse("Admin password reset successfully")
+    except:
+        return HttpResponse("Admin not found")
