@@ -1,0 +1,133 @@
+/* ================= HEADER ================= */
+.header-gradient {
+    background: linear-gradient(135deg, #b30000, #ff4d4d);
+    border-radius: 15px;
+    color: white;
+    padding: 20px;
+    font-weight: 600;
+}
+
+/* ================= BUTTONS ================= */
+
+/* Use custom class instead of overriding bootstrap */
+.btn-kl {
+    background-color: #b30000;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    transition: 0.3s ease;
+}
+
+.btn-kl:hover {
+    background-color: #8a0000;
+    transform: translateY(-1px);
+}
+
+/* Secondary button */
+.btn-kl-light {
+    background: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-kl-light:hover {
+    background: #e2e2e2;
+}
+
+/* ================= CARD ================= */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* ================= SIDEBAR LOGO ================= */
+.sidebar-logo {
+    width: 90px;
+    height: auto;
+    margin-bottom: 12px;
+
+    /* If logo is dark, use this */
+    filter: brightness(0) invert(1);
+
+    /* smooth */
+    transition: 0.3s;
+}
+
+/* ================= AUTH LOGO ================= */
+.auth-logo {
+    width: 140px;
+    margin-bottom: 15px;
+}
+
+/* ================= LOGIN / REGISTER CARD ================= */
+.auth-card,
+.login-card {
+    background: rgba(255,255,255,0.96);
+    padding: 40px;
+    border-radius: 18px;
+    width: 360px;
+    margin: auto;
+    margin-top: 80px;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.25),
+        0 0 20px rgba(179,0,0,0.15);
+
+    text-align: center;
+}
+
+/* ================= INPUT ================= */
+.form-control {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    transition: 0.2s;
+}
+
+.form-control:focus {
+    border-color: #b30000;
+    box-shadow: 0 0 0 0.2rem rgba(179,0,0,0.2);
+}
+
+/* ================= TEXT ================= */
+.auth-title {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.auth-subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* ================= SMALL EFFECTS ================= */
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 500px) {
+
+    .auth-card,
+    .login-card {
+        width: 90%;
+        padding: 25px;
+    }
+
+    .auth-logo {
+        width: 110px;
+    }
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}

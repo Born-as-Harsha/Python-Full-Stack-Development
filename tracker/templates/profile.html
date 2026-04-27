@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+
+<style>
+.profile-card {
+    width: 600px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.form-control:focus {
+    border-color: #b30000;
+    box-shadow: 0 0 0 0.2rem rgba(179,0,0,0.2);
+}
+
+.update-btn {
+    background: linear-gradient(135deg,#ff4d4d,#b30000);
+    border-radius: 30px;
+    padding: 10px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.update-btn:hover {
+    transform: scale(1.03);
+}
+</style>
+
+<div class="container d-flex justify-content-center mt-5">
+
+    <div class="card profile-card border-0">
+
+        <!-- HEADER -->
+        <div style="background: linear-gradient(135deg,#b30000,#ff4d4d); height:110px;"></div>
+
+        <div class="text-center" style="margin-top:-50px;">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- ✅ CLEAN MESSAGE -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mx-4 mt-3">
+                            <div class="p-3 text-center"
+                                 style="
+                                    background:#e6f4ea;
+                                    color:#1e7e34;
+                                    border-radius:12px;
+                                    font-weight:500;
+                                    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+                                 ">
+                                ✔ {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- PROFILE PIC -->
+                <div class="position-relative d-inline-block">
+                    <img src="{% if profile.profile_pic %}{{ profile.profile_pic.url }}{% else %}{% static 'images/default.png' %}{% endif %}"
+                         class="rounded-circle shadow"
+                         width="110" height="110" id="previewImg">
+
+                    <label for="profilePicInput"
+                           class="btn btn-danger btn-sm rounded-circle"
+                           style="position:absolute; bottom:0; right:0;">
+                        📷
+                    </label>
+
+                    <input type="file" name="profile_pic" id="profilePicInput" hidden>
+                </div>
+
+                <!-- NAME -->
+                <h4 class="mt-3 fw-bold mb-1">{{ request.user.username }}</h4>
+                <p class="text-muted mb-3">{{ profile.department }}</p>
+
+                <!-- FORM -->
+                <div class="px-4 text-start">
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">University ID</label>
+                        <input type="text"
+                               value="{{ request.user.username }}"
+                               class="form-control"
+                               readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Email</label>
+                        <input type="email"
+                               name="email"
+                               value="{{ request.user.email }}"
+                               class="form-control"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Department</label>
+                        <input type="text"
+                               name="department"
+                               value="{{ profile.department }}"
+                               class="form-control"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Phone</label>
+                        <input type="text"
+                               name="phone"
+                               value="{{ profile.phone }}"
+                               pattern="[0-9]{10}"
+                               class="form-control"
+                               required>
+                        <small class="text-muted">Enter 10-digit number</small>
+                    </div>
+
+                </div>
+
+                <!-- BUTTON -->
+                <div class="mb-4 px-4">
+                    <button class="btn update-btn w-100 text-white">
+                        Update Profile
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<!-- IMAGE PREVIEW -->
+<script>
+document.getElementById("profilePicInput").addEventListener("change", function(e){
+    const reader = new FileReader();
+    reader.onload = function(){
+        document.getElementById("previewImg").src = reader.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);
+});
+</script>
+
+<!-- AUTO HIDE MESSAGE -->
+<script>
+setTimeout(()=>{
+    document.querySelectorAll('.mx-4').forEach(el=>{
+        el.style.display = 'none';
+    });
+},3000);
+</script>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card p-4 mb-4 header-gradient">
+    <h3>🏪 College Fest Stalls</h3>
+    <p>Book your stall space</p>
+</div>
+
+<div class="row">
+
+{% for stall in stalls %}
+<div class="col-md-4 mb-4">
+    <div class="card p-3 shadow">
+
+        <h5>{{ stall.name }}</h5>
+
+        <p>📏 {{ stall.size }}</p>
+        <p>📍 {{ stall.location }}</p>
+        <p>⭐ {{ stall.rating }}</p>
+        <p>💰 ₹{{ stall.price }}</p>
+
+        <p>
+        Seats: {{ stall.booked_slots }}/{{ stall.total_slots }}
+        </p>
+
+        {% if stall.booked_slots < stall.total_slots %}
+        <a href="{% url 'book_stall' stall.id %}" class="btn btn-success">
+            Book Now
+        </a>
+        {% else %}
+        <button class="btn btn-secondary">Not Available</button>
+        {% endif %}
+
+    </div>
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}

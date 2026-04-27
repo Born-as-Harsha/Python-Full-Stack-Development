@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}My Registrations{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="card shadow-lg p-4 mb-4 text-white"
+          style="background: linear-gradient(135deg,#b30000,#ff4d4d); border-radius:15px;">
+        <h2 class="fw-bold">📋 My Activity Registrations</h2>
+        <p class="mb-0">Track all your registered activities</p>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="d-flex gap-2 mb-3">
+        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-dark">
+            ⬅ Dashboard
+        </a>
+
+        <a href="{% url 'activities' %}" class="btn btn-primary">
+            🎯 Browse Activities
+        </a>
+    </div>
+
+    {% if registrations %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-hover align-middle text-center">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Activity</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Registered On</th>
+                        <th>QR</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for reg in registrations %}
+                    <tr>
+
+                        <!-- ACTIVITY -->
+                        <td class="fw-semibold">{{ reg.activity.title }}</td>
+
+                        <!-- CATEGORY -->
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                {{ reg.activity.category }}
+                            </span>
+                        </td>
+
+                        <!-- DATE -->
+                        <td>{{ reg.activity.date }}</td>
+
+                        <!-- STATUS -->
+                        <td>
+                            {% if reg.status == 'approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif reg.status == 'pending' %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif reg.status == 'waitlist' %}
+                                <span class="badge bg-secondary">Waitlist</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- CREATED -->
+                        <td>{{ reg.created_at|date:"d M Y" }}</td>
+
+                        <!-- QR DOWNLOAD -->
+                        <td>
+                            {% if reg.qr_code %}
+                                <a href="{{ reg.qr_code.url }}"
+                                   class="btn btn-sm btn-outline-success"
+                                   download>
+                                    ⬇ QR
+                                </a>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- ACTION -->
+                        <td>
+                            <a href="{% url 'unregister_activity' reg.id %}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to unregister?');">
+                                ❌ Unregister
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+    {% else %}
+
+    <!-- EMPTY STATE -->
+    <div class="text-center mt-5">
+        <h5>No registrations yet 😔</h5>
+        <p class="text-muted">Start exploring activities now!</p>
+
+        <a href="{% url 'activities' %}" class="btn btn-primary mt-3">
+            🎯 Browse Activities
+        </a>
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- FOOTER -->
+<footer class="text-center mt-5 text-muted">
+    <hr>
+    <p>© 2026 KL University | Student Activity Portal</p>
+</footer>
+
+{% endblock %}

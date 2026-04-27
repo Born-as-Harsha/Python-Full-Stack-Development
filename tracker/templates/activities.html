@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Activities{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="card shadow-lg p-4 mb-4 text-white"
+         style="background: linear-gradient(135deg,#b30000,#ff4d4d); border-radius:15px;">
+        <h2 class="fw-bold">🎯 Available Activities</h2>
+        <p class="mb-0">Explore and register for upcoming activities</p>
+    </div>
+
+    <!-- BACK BUTTON -->
+    <div class="mb-3">
+        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-dark">
+            ⬅ Back to Dashboard
+        </a>
+    </div>
+
+    <!-- 🔥 CATEGORY FILTER -->
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <a href="?category=Cultural"
+           class="btn {% if request.GET.category == 'Cultural' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+           Cultural
+        </a>
+
+        <a href="?category=Sports"
+           class="btn {% if request.GET.category == 'Sports' %}btn-success{% else %}btn-outline-success{% endif %}">
+           Sports
+        </a>
+
+        <a href="?category=Technical"
+           class="btn {% if request.GET.category == 'Technical' %}btn-dark{% else %}btn-outline-dark{% endif %}">
+           Technical
+        </a>
+
+        <a href="{% url 'activities' %}"
+           class="btn {% if not request.GET.category %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+           All
+        </a>
+    </div>
+
+    <!-- ACTIVITIES -->
+    <div class="row">
+
+        {% for act in activities %}
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow-sm h-100" style="border-radius:12px;">
+                <div class="card-body">
+
+                    <!-- TITLE -->
+                    <h5 class="fw-bold">{{ act.title }}</h5>
+
+                    <!-- CATEGORY -->
+                    <span class="badge bg-primary mb-2">
+                        {{ act.category }}
+                    </span>
+
+                    <!-- DESCRIPTION -->
+                    <p class="text-muted">
+                        {{ act.description }}
+                    </p>
+
+                    <!-- DATE -->
+                    <p><strong>Date:</strong> {{ act.date }}</p>
+
+                    <!-- SEATS -->
+                    <p id="seat-{{ act.id }}" data-id="{{ act.id }}">
+                        <strong>Seats:</strong>
+                        {{ act.filled_seats }} / {{ act.total_seats }}
+                    </p>
+
+                    <!-- STATUS -->
+                    {% if act.filled_seats < act.total_seats %}
+                        <span class="badge bg-success mb-2">Available</span>
+                    {% else %}
+                        <span class="badge bg-danger mb-2">Full</span>
+                    {% endif %}
+
+                    <!-- ACTION BUTTON -->
+                    {% if act.filled_seats < act.total_seats %}
+                        <a href="{% url 'register_activity' act.id %}"
+                           class="btn btn-success w-100">
+                           ✅ Apply Now
+                        </a>
+                    {% else %}
+                        <a href="{% url 'register_activity' act.id %}"
+                           class="btn btn-warning w-100">
+                           ⏳ Join Waitlist
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    {% if not activities %}
+    <div class="text-center mt-5">
+        <h5>No activities available 🚫</h5>
+        <a href="{% url 'student_dashboard' %}" class="btn btn-dark mt-3">
+            Go Home
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- FOOTER -->
+<footer class="text-center mt-5 text-muted">
+    <hr>
+    <p>© 2026 KL University | Student Activity Portal</p>
+</footer>
+
+<!-- 🔥 LIVE SEAT UPDATE (SAFE) -->
+<script>
+function updateSeats(id){
+    fetch(`/seats/${id}/`)
+    .then(res => res.json())
+    .then(data => {
+        let el = document.getElementById(`seat-${id}`);
+        if(el){
+            el.innerHTML = "<strong>Seats:</strong> " + data.filled + " / " + data.total;
+        }
+    })
+    .catch(err => console.log("Seat update error:", err));
+}
+
+// refresh every 5 sec
+setInterval(() => {
+    document.querySelectorAll('[id^="seat-"]').forEach(el => {
+        let id = el.dataset.id;
+        if(id){
+            updateSeats(id);
+        }
+    });
+}, 5000);
+</script>
+
+{% endblock %}

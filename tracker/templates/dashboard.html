@@ -1,0 +1,352 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="header-bar d-flex justify-content-between align-items-center shadow-sm mb-4">
+    <div>
+        <h4 class="m-0 fw-bold text-dark">
+            Welcome, {{ request.user.username }}
+        </h4>
+        <p class="text-muted mb-0">
+            Track your achievements and register for university events in one place.
+        </p>
+    </div>
+    <div class="text-muted fw-semibold">
+        {{ profile.department|default:"Department Not Set" }}
+    </div>
+</div>
+
+<!-- ================= STATS ================= -->
+<div class="row g-4 mb-5">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 p-4">
+            <small class="text-uppercase fw-bold text-muted">Total Achievements</small>
+            <h2 class="fw-bold mt-2 mb-0">{{ activities|length }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 p-4 border-start border-4 border-success">
+            <small class="text-uppercase fw-bold text-success">Verified Achievements</small>
+            <h2 class="fw-bold mt-2 mb-0">{{ verified_count|default:0 }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 p-4 border-start border-4 border-warning">
+            <small class="text-uppercase fw-bold text-warning">Pending Review</small>
+            <h2 class="fw-bold mt-2 mb-0">{{ pending_count|default:0 }}</h2>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= PROFILE ================= -->
+<div class="card p-3 shadow mb-4">
+    <h5>👤 Profile</h5>
+    <p><strong>Username:</strong> {{ request.user.username }}</p>
+    <p><strong>Email:</strong> {{ request.user.email }}</p>
+</div>
+
+<!-- ================= ACHIEVEMENTS ================= -->
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-white py-4 px-4 d-flex justify-content-between align-items-center border-0">
+        <h5 class="m-0 fw-bold">🏆 My Achievements</h5>
+        <a href="{% url 'add_achievement' %}" class="btn btn-danger px-4 rounded-pill shadow-sm">
+           + Add New
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle m-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4 py-3">Activity</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Proof</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for activity in activities %}
+                <tr>
+                    <td class="ps-4 fw-bold">{{ activity.title }}</td>
+
+                    <td>
+                        <span class="badge bg-secondary">
+                            {{ activity.category }}
+                        </span>
+                    </td>
+
+                    <td>{{ activity.date_achieved }}</td>
+
+                    <td>
+                        {% if activity.is_verified %}
+                            <span class="badge bg-success">Verified</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if activity.proof %}
+                            <a href="{{ activity.proof.url }}" target="_blank"
+                               class="btn btn-sm btn-outline-primary">
+                                View
+                            </a>
+                        {% else %}
+                            <span class="text-muted small">No File</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <a href="{% url 'unregister_achievement' activity.id %}"
+                           class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Are you sure?')">
+                           Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        No achievements yet
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<!-- ================= REGISTRATIONS ================= -->
+<div class="card shadow-sm border-0 mt-5">
+
+    <div class="card-header bg-white py-4 px-4 d-flex justify-content-between align-items-center border-0">
+        <h5 class="m-0 fw-bold">🎯 My Event Registrations</h5>
+
+        <a href="{% url 'my_registrations' %}"
+           class="btn btn-primary px-4 rounded-pill shadow-sm">
+           View All
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle m-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4 py-3">Activity</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>QR</th>
+                </tr>
+            </thead>
+
+<tbody>
+    {% for reg in registrations %}
+    <tr>
+
+        <td class="ps-4 fw-bold">{{ reg.activity.title }}</td>
+
+        <td>
+            <span class="badge bg-info text-dark">
+                {{ reg.activity.category }}
+            </span>
+        </td>
+
+        <td>{{ reg.activity.date }}</td>
+
+        <!-- ✅ FIXED SEATS -->
+        <td>
+            <span class="badge bg-success">
+                {{ reg.activity.total_seats|add:-reg.activity.filled_seats }} Seats Left
+            </span>
+        </td>
+
+        <!-- STATUS -->
+        <td>
+            {% if reg.status == 'approved' %}
+                <span class="badge bg-success">Approved</span>
+            {% elif reg.status == 'pending' %}
+                <span class="badge bg-warning text-dark">Pending</span>
+            {% elif reg.status == 'waitlist' %}
+                <span class="badge bg-secondary">Waitlist</span>
+            {% else %}
+                <span class="badge bg-danger">Rejected</span>
+            {% endif %}
+        </td>
+
+        <!-- QR -->
+        <td>
+            {% if reg.qr_code %}
+                <a href="{{ reg.qr_code.url }}" target="_blank"
+                   class="btn btn-sm btn-outline-primary">
+                    Download
+                </a>
+            {% else %}
+                <span class="text-muted small">N/A</span>
+            {% endif %}
+        </td>
+
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6" class="text-center text-muted py-4">
+            No registrations yet
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+        </table>
+    </div>
+
+</div>
+<script id="chart-data" type="application/json">
+{
+    "approved": {{ approved|default:0 }},
+    "pending": {{ pending_count|default:0 }},
+    "waitlist": {{ waitlist|default:0 }}
+}
+</script>
+<!-- ================= CHART ================= -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ✅ Safe Django JSON -->
+{{ chart_data|json_script:"chart-data" }}
+
+<script>
+const ctx = document.getElementById('myChart');
+
+const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+
+// 🎯 Normalize scale for better visuals
+const maxValue = Math.max(
+    chartData.approved,
+    chartData.pending,
+    chartData.waitlist,
+    5 // minimum height baseline
+);
+
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Approved', 'Pending', 'Waitlist'],
+        datasets: [{
+            label: 'Registrations',
+            data: [
+                chartData.approved,
+                chartData.pending,
+                chartData.waitlist
+            ],
+            backgroundColor: [
+                '#28a745',
+                '#ffc107',
+                '#6c757d'
+            ],
+            borderRadius: 12,
+            barThickness: 60
+        }]
+    },
+    options: {
+        responsive: true,
+        layout: {
+            padding: 20
+        },
+        animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+        },
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#000',
+                titleColor: '#fff',
+                bodyColor: '#fff'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                suggestedMax: maxValue + 2,  // 🔥 makes bars look taller
+                ticks: {
+                    stepSize: 1
+                },
+                grid: {
+                    color: "#eee"
+                }
+            },
+            x: {
+                grid: { display: false }
+            }
+        }
+    }
+});
+</script>
+
+<script>
+function updateChart(chart) {
+    fetch("{% url 'tracker:chart_data_api' %}")
+        .then(res => res.json())
+        .then(data => {
+            chart.data.datasets[0].data = [
+                data.approved,
+                data.pending,
+                data.waitlist
+            ];
+            chart.update();
+        });
+}
+
+// auto refresh every 5 seconds
+setInterval(() => updateChart(pieChartInstance), 5000);
+</script>
+
+<canvas id="activityChart" height="120"></canvas>
+
+<script>
+const ctx2 = document.getElementById('activityChart');
+
+fetch("{% url 'tracker:activity_analytics' %}")
+.then(res => res.json())
+.then(data => {
+
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Registrations per Activity',
+                data: data.counts,
+                backgroundColor: '#007bff',
+                borderRadius: 8
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+});
+</script>
+{% endblock %}

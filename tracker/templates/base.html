@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>{% block title %}Student Portal{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- CSS -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+    background:#f4f7f6;
+    margin:0;
+    font-family:Segoe UI, sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar{
+    background:#b30000;
+    min-height:100vh;
+    width:250px;
+    color:white;
+    position:fixed;
+    padding-top:20px;
+    text-align:center;
+}
+
+/* LOGO */
+.sidebar-logo{
+    width:120px;
+    margin-bottom:10px;
+}
+
+/* NAV */
+.nav-link{
+    color:rgba(255,255,255,0.85);
+    margin:6px 15px;
+    padding:10px 12px;
+    text-align:left;
+}
+
+.nav-link:hover,
+.nav-link.active{
+    color:white;
+    background:rgba(255,255,255,0.18);
+    border-radius:6px;
+}
+
+/* MAIN */
+.main-wrapper{
+    margin-left:250px;
+    padding:25px 40px;
+}
+
+/* TOPBAR */
+.topbar{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+/* PROFILE */
+.top-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #b30000;
+}
+
+.profile-name{
+    margin-left:8px;
+    font-weight:600;
+    color:#333;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <div class="mb-4">
+        <img src="{% static 'images/kl_logo_small.png' %}" class="sidebar-logo">
+        <h5 class="fw-bold text-white">STUDENT PORTAL</h5>
+        <hr class="bg-white mx-3">
+    </div>
+
+    <nav class="nav flex-column">
+
+        <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}"
+           href="{% url 'student_dashboard' %}">
+           📊 Dashboard
+        </a>
+
+        <a class="nav-link {% if request.path == '/add/' %}active{% endif %}"
+           href="{% url 'add_achievement' %}">
+           ➕ Add Achievement
+        </a>
+
+        <a class="nav-link {% if request.path == '/view-all/' %}active{% endif %}"
+           href="{% url 'view_all' %}">
+           📂 View All Activities
+        </a>
+
+        <!-- ✅ FIXED (namespaced) -->
+        <a class="nav-link {% if request.path == '/activities/' %}active{% endif %}"
+           href="{% url 'activities' %}">
+           🎯 Available Activities
+        </a>
+
+        <!-- ✅ FIXED -->
+        <a class="nav-link {% if request.path == '/my-registrations/' %}active{% endif %}"
+           href="{% url 'my_registrations' %}">
+           📋 My Registrations
+        </a>
+
+        <!-- ✅ FIXED -->
+        <a class="nav-link {% if request.path == '/stalls/' %}active{% endif %}"
+           href="{% url 'stalls' %}">
+           🏪 Fest Stalls
+        </a>
+
+        <a class="nav-link {% if request.path == '/profile/' %}active{% endif %}"
+           href="{% url 'profile' %}">
+           👤 My Profile
+        </a>
+
+        <a class="nav-link mt-5 text-warning" href="{% url 'logout' %}">
+           🚪 Logout
+        </a>
+
+    </nav>
+
+</div>
+
+<!-- MAIN -->
+<div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <div class="dropdown">
+
+            <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
+               href="#"
+               data-bs-toggle="dropdown">
+
+                {% if profile and profile.profile_pic %}
+                    <img src="{{ profile.profile_pic.url }}" class="top-avatar">
+                {% else %}
+                    <img src="{% static 'images/kl_logo.png' %}" class="top-avatar">
+                {% endif %}
+
+                <span class="profile-name">
+                    {{ request.user.username }}
+                </span>
+
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                <li class="dropdown-header">
+                    {{ request.user.email }}
+                </li>
+
+                <li><a class="dropdown-item" href="{% url 'profile' %}">👤 My Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'student_dashboard' %}">📊 Dashboard</a></li>
+
+                <!-- ✅ FIXED -->
+                <li><a class="dropdown-item" href="{% url 'activities' %}">🎯 Activities</a></li>
+                <li><a class="dropdown-item" href="{% url 'my_registrations' %}">📋 My Registrations</a></li>
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">🚪 Logout</a></li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h2 class="fw-bold">📊 Student Dashboard</h2>
+        <p class="text-muted">Overview of your activities and registrations</p>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="row g-3">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <h6 class="text-muted">Total Activities</h6>
+                <h2 class="fw-bold">{{ total_activities }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <h6 class="text-muted">My Registrations</h6>
+                <h2 class="fw-bold">{{ total_registrations }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <h6 class="text-success">Approved</h6>
+                <h3 class="fw-bold">{{ approved }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <h6 class="text-warning">Pending</h6>
+                <h3 class="fw-bold">{{ pending }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <h6 class="text-secondary">Waitlist</h6>
+                <h3 class="fw-bold">{{ waitlist }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="mt-4 d-flex gap-2">
+        <a href="{% url 'activities' %}" class="btn btn-primary">
+            🎯 Browse Activities
+        </a>
+
+        <a href="{% url 'my_registrations' %}" class="btn btn-outline-dark">
+            📋 My Registrations
+        </a>
+    </div>
+
+    <!-- CHART SECTION -->
+    <div class="card shadow-sm mt-5 p-4">
+        <h5 class="mb-3">📈 Registration Analytics</h5>
+
+        <canvas id="myChart" height="100"></canvas>
+    </div>
+
+</div>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const data = JSON.parse('{{ chart_data|escapejs }}');
+
+const ctx = document.getElementById('myChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Approved', 'Pending', 'Waitlist'],
+        datasets: [{
+            label: 'Registrations',
+            data: [data.approved, data.pending, data.waitlist],
+            backgroundColor: [
+                '#28a745',
+                '#ffc107',
+                '#6c757d'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+</script>
+
+{% endblock %}

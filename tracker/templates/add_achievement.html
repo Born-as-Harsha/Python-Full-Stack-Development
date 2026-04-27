@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Achievement{% endblock %}
+
+{% block content %}
+
+<div class="header-bar d-flex justify-content-between align-items-center shadow-sm mb-4">
+    <h4 class="m-0 fw-bold text-dark">Log New Achievement</h4>
+</div>
+
+<div style="max-width: 850px;" class="mx-auto">
+
+    <div class="card shadow-sm border-0 p-4">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Event Title</label>
+                    <input type="text"
+                           name="title"
+                           class="form-control"
+                           placeholder="e.g. Smart India Hackathon"
+                           required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="Hackathon">Hackathon</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Certification">Certification</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Date Achieved</label>
+                    <input type="date"
+                           name="date"
+                           class="form-control"
+                           required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Proof (Image/PDF)</label>
+                    <input type="file"
+                           name="proof"
+                           class="form-control">
+                </div>
+
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">Description</label>
+                <textarea name="description"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Brief description of the achievement..."></textarea>
+            </div>
+
+            <div class="d-flex gap-3">
+                <button type="submit"
+                        class="btn btn-danger px-5 shadow-sm">
+                        Save Achievement
+                </button>
+
+                <a href="{% url 'student_dashboard' %}"
+                   class="btn btn-outline-secondary px-4">
+                   Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
