@@ -6,7 +6,7 @@ from tracker import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-
+      path('reset-admin/', views.reset_admin),
     # 🔹 Admin
     path('admin/', admin.site.urls),
 
@@ -60,7 +60,7 @@ urlpatterns = [
 
     # activity_tracker/urls.py
 
-    path('reset-admin/', views.reset_admin),
+  
 ]
 
 # MEDIA

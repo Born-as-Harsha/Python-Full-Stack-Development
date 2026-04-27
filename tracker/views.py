@@ -642,15 +642,16 @@ def activity_analytics(request):
         'counts': counts
     })
 
-from tracker import views
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
 def reset_admin(request):
     user, created = User.objects.get_or_create(username='admin')
-    user.set_password('admin123')
+
+    user.set_password('admin123')   # password
+    user.email = "admin@gmail.com"
     user.is_staff = True
     user.is_superuser = True
-    user.email = "admin@gmail.com"
     user.save()
-    return HttpResponse("Admin ready")
+
+    return HttpResponse("Admin created/reset successfully")
