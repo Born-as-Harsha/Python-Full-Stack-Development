@@ -1,13 +1,12 @@
 import os
 from pathlib import Path
-import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 🔐 SECURITY
 SECRET_KEY = 'django-insecure-xxxxxxxxxxxxxxxxxxxxxxxx'
-DEBUG = False
-ALLOWED_HOSTS = ['*']
+DEBUG = True
+ALLOWED_HOSTS = []
 
 # 🔹 APPLICATIONS
 INSTALLED_APPS = [
@@ -25,7 +24,6 @@ INSTALLED_APPS = [
 # 🔹 MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -58,7 +56,10 @@ WSGI_APPLICATION = 'activity_tracker.wsgi.application'
 
 # 🔹 DATABASE
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # 🔹 PASSWORD VALIDATION
@@ -77,7 +78,9 @@ USE_TZ = True
 
 # 🔹 STATIC FILES
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [BASE_DIR / "tracker" / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 # 🔹 MEDIA FILES
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
